@@ -1,7 +1,7 @@
 mod command;
 
 use command::{
-    command_ran_successfully, get_attach_to_window_command, get_command_output, 
+    command_ran_successfully, get_attach_to_window_command, get_command_output,
     parse_window_command, run_command,
 };
 
@@ -29,12 +29,12 @@ fn main() {
         r"ls $HOME/.config/tmux/session*.json | sed 's/.*\///; s/\.json//' | sort -r",
     );
 
-    let config_file_name = fzf_select(fzf_input) + ".json";
+    let config_file_name = format!("{}{}", fzf_select(fzf_input), ".json");
 
     let home_dir = std::env::var("HOME").unwrap();
     let config_folder_path = match std::env::var("XDG_CONFIG_HOME") {
         Ok(val) => val,
-        _ => "~/.config".replace("~", home_dir.as_str()),
+        _ => format!("{}/.config", home_dir),
     };
 
     let tmux_config_folder_path = format!("{}/tmux", config_folder_path);
