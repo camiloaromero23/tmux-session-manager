@@ -1,0 +1,18 @@
+{
+  "sessionDir": "~/path_to_desired_session_dir/.../{session_name}",
+  "windows": [
+    {
+      "windowName": "windowName?",
+      "command": "command"
+    },
+    {
+      "windowName": "windowName?",
+      "command": "command"
+    },
+    {
+      "windowName": "windowName?",
+      "command": "command"
+    }
+  ]
+}
+
