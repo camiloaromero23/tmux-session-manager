@@ -25,12 +25,6 @@ struct SessionConfig {
 fn main() {
     env_logger::init();
 
-    let fzf_input = get_command_output(
-        r"ls $HOME/.config/tmux/session*.json | sed 's/.*\///; s/\.json//' | sort -r",
-    );
-
-    let config_file_name = format!("{}{}", fzf_select(fzf_input), ".json");
-
     let home_dir = std::env::var("HOME").unwrap();
     let config_folder_path = match std::env::var("XDG_CONFIG_HOME") {
         Ok(val) => val,
@@ -39,14 +33,26 @@ fn main() {
 
     let tmux_config_folder_path = format!("{}/tmux", config_folder_path);
 
+    let sed_replace_regex = r"s/.*\///; s/\.json//";
+
+    let configured_sessions = get_command_output(
+        format!(
+            r"ls {}/session*.json | sed '{}' | sort -r",
+            tmux_config_folder_path, sed_replace_regex,
+        )
+        .as_ref(),
+    );
+
+    let config_file_name = format!("{}{}", fzf_select(configured_sessions), ".json");
+
     let session_config_path = format!("{}/{}", tmux_config_folder_path, config_file_name);
 
-    let file = std::fs::read_to_string(session_config_path).expect("Unable to read file");
+    let selected_session_file = std::fs::read_to_string(session_config_path).expect("Unable to read file");
 
-    let session: SessionConfig = serde_json::from_str(&file)
+    let selected_session: SessionConfig = serde_json::from_str(&selected_session_file)
         .expect("Session does not have correct format. Watch file structure in base_session.json");
 
-    let session_name = session
+    let session_name = selected_session
         .session_dir
         .split("/")
         .last()
@@ -65,7 +71,7 @@ fn main() {
         return;
     }
 
-    let first_window = session.windows.get(0).expect("No windows provided");
+    let first_window = selected_session.windows.get(0).expect("No windows provided");
 
     let window_name = match first_window.window_name.to_owned() {
         Some(name) => format!(" -n {}", name),
@@ -75,12 +81,12 @@ fn main() {
     let tmux_session_command = parse_window_command(first_window.command.to_owned(), Some(true));
     let tmux_session_command = format!(
         "tmux new-session -d -c {} -s {}{}{}",
-        session.session_dir, session_name, window_name, tmux_session_command
+        selected_session.session_dir, session_name, window_name, tmux_session_command
     );
 
     let mut tmux_commands = vec![tmux_session_command];
 
-    session.windows.into_iter().skip(1).for_each(|window| {
+    selected_session.windows.into_iter().skip(1).for_each(|window| {
         let window_name = match window.window_name {
             Some(name) => format!(" -n {}", name),
             _ => "".to_owned(),
@@ -88,7 +94,7 @@ fn main() {
         let command = parse_window_command(window.command, None);
         let command = format!(
             "tmux new-window -c {}{} -t {}{}",
-            session.session_dir, window_name, session_name, command
+            selected_session.session_dir, window_name, session_name, command
         );
 
         tmux_commands.push(command);
