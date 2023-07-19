@@ -32,8 +32,6 @@ fn main() {
         _ => format!("{}/.config", home_dir),
     };
 
-    let is_running_inside_tmux = std::env::var("TMUX").is_ok();
-
     let tmux_config_folder_path = format!("{}/tmux", config_folder_path);
 
     let sed_replace_regex = r"s/.*\///; s/\.json//";
@@ -61,7 +59,7 @@ fn main() {
         command_ran_successfully(format!("tmux has-session -t {}", selected_session));
 
     let attach_to_window_command =
-        get_attach_to_window_command(selected_session.as_ref(), is_running_inside_tmux);
+        get_attach_to_window_command(selected_session.as_ref());
 
     if session_exists {
         log::debug!("Session {} already exists", selected_session);
@@ -86,7 +84,7 @@ fn main() {
         .expect("No session name provided");
 
     let attach_to_window_command =
-        get_attach_to_window_command(session_name, is_running_inside_tmux);
+        get_attach_to_window_command(session_name);
 
     let first_window = session_config.windows.get(0).expect("No windows provided");
 
@@ -124,8 +122,6 @@ fn main() {
     tmux_commands.push(attach_to_window_command);
 
     tmux_commands.into_iter().for_each(|command| {
-        log::debug!("Executing command: {}", command);
-
         run_command(command);
     });
 }

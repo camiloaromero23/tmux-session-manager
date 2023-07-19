@@ -11,6 +11,8 @@ pub fn parse_window_command(command: String, is_session: Option<bool>) -> String
 }
 
 pub fn run_command(command: String) -> std::process::ExitStatus {
+    log::debug!("Executing command: {}", command);
+
     return std::process::Command::new("sh")
         .arg("-c")
         .arg(command)
@@ -26,7 +28,9 @@ pub fn command_ran_successfully(command: String) -> bool {
     return run_command(command).success();
 }
 
-pub fn get_attach_to_window_command(session_name: &str, is_running_inside_tmux: bool) -> String {
+pub fn get_attach_to_window_command(session_name: &str) -> String {
+    let is_running_inside_tmux = std::env::var("TMUX").is_ok();
+
     if is_running_inside_tmux {
         return format!("tmux switch-client -t {}", session_name);
     }
