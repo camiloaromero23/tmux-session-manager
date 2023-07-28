@@ -58,8 +58,7 @@ fn main() {
     let session_exists =
         command_ran_successfully(format!("tmux has-session -t {}", selected_session));
 
-    let attach_to_window_command =
-        get_attach_to_window_command(selected_session.as_ref());
+    let attach_to_window_command = get_attach_to_window_command(selected_session.as_ref());
 
     if session_exists {
         log::debug!("Session {} already exists", selected_session);
@@ -77,14 +76,7 @@ fn main() {
     let session_config: SessionConfig = serde_json::from_str(&selected_session_file)
         .expect("Session does not have correct format. Watch file structure in base_session.json");
 
-    let session_name = session_config
-        .session_dir
-        .split("/")
-        .last()
-        .expect("No session name provided");
-
-    let attach_to_window_command =
-        get_attach_to_window_command(session_name);
+    let attach_to_window_command = get_attach_to_window_command(selected_session.as_ref());
 
     let first_window = session_config.windows.get(0).expect("No windows provided");
 
@@ -96,7 +88,7 @@ fn main() {
     let tmux_session_command = parse_window_command(first_window.command.to_owned(), Some(true));
     let tmux_session_command = format!(
         "tmux new-session -d -c {} -s {}{}{}",
-        session_config.session_dir, session_name, window_name, tmux_session_command
+        session_config.session_dir, selected_session, window_name, tmux_session_command
     );
 
     let mut tmux_commands = vec![tmux_session_command];
@@ -113,7 +105,7 @@ fn main() {
             let command = parse_window_command(window.command, None);
             let command = format!(
                 "tmux new-window -c {}{} -t {}{}",
-                session_config.session_dir, window_name, session_name, command
+                session_config.session_dir, window_name, selected_session, command
             );
 
             tmux_commands.push(command);

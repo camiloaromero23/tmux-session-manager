@@ -35,7 +35,7 @@ pub fn get_attach_to_window_command(session_name: &str) -> String {
         return format!("tmux switch-client -t {}", session_name);
     }
 
-    return format!("tmux attach-session -t {}", session_name);
+    return format!("tmux attach-session -t {}:1", session_name);
 }
 
 pub fn get_command_output(command: &str) -> Vec<String> {
