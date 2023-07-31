@@ -2,6 +2,10 @@
 name = "tmux-session-manager"
 version = "0.1.0"
 edition = "2021"
+authors = ["Camilo Romero <camiloaromero23@gmail.com>"]
+description = "A tmux session manager which uses fzf to select from both active and configured sessions"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/camiloaromero23/tmux-session-manager"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
