@@ -1,6 +1,6 @@
 [package]
 name = "tmux-session-manager"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Camilo Romero <camiloaromero23@gmail.com>"]
 description = "A tmux session manager which uses fzf to select from both active and configured sessions"
@@ -13,6 +13,6 @@ repository = "https://github.com/camiloaromero23/tmux-session-manager"
 env_logger = "0.10.0"
 itertools = "0.11.0"
 log = "0.4.19"
-rust_fzf = "0.1.1"
+rust_fzf = "0.1.2"
 serde = { version = "1.0.171", features = ["derive"] }
 serde_json = "1.0.103"

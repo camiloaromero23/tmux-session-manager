@@ -174,9 +174,9 @@ checksum = "e5ea92a5b6195c6ef2a0295ea818b312502c6fc94dde986c5553242e18fd4ce2"
 
 [[package]]
 name = "rust_fzf"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d11972a669a6e05d8a33af5a2fdec29ae2a3df64361e1237b06d6f974d227c7c"
+checksum = "09edc3791ac59f1c4c161777ff46d65ecf06f3a8a24f6fa21f4fdd76dae52ef6"
 
 [[package]]
 name = "rustix"
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "tmux-session-manager"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "env_logger",
  "itertools",

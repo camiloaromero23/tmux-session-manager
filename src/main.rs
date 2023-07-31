@@ -6,7 +6,7 @@ use command::{
 };
 
 use itertools::Itertools;
-use rust_fzf::fzf_select;
+use rust_fzf;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -53,7 +53,7 @@ fn main() {
         .sorted_unstable()
         .collect();
 
-    let selected_session = fzf_select(configured_sessions);
+    let selected_session = rust_fzf::select(configured_sessions, vec![]);
 
     let session_exists =
         command_ran_successfully(format!("tmux has-session -t {}", selected_session));
