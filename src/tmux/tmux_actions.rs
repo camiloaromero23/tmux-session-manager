@@ -70,6 +70,10 @@ pub fn kill_session() {
     let active_sessions = tmux::list_sessions();
     let session_to_kill = rust_fzf::select(active_sessions, vec![]);
 
+    if session_to_kill.is_empty() {
+        return;
+    }
+
     let command = tmux::kill_session(session_to_kill.as_ref());
 
     run_command(command);
