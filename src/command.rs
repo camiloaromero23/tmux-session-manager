@@ -28,16 +28,6 @@ pub fn command_ran_successfully(command: String) -> bool {
     return run_command(command).success();
 }
 
-pub fn get_attach_to_window_command(session_name: &str) -> String {
-    let is_running_inside_tmux = std::env::var("TMUX").is_ok();
-
-    if is_running_inside_tmux {
-        return format!("tmux switch-client -t {}", session_name);
-    }
-
-    return format!("tmux attach-session -t {}:1", session_name);
-}
-
 pub fn get_command_output(command: &str) -> Vec<String> {
     let output = std::process::Command::new("sh")
         .arg("-c")
