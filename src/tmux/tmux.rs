@@ -62,3 +62,7 @@ pub fn get_attach_to_window_command(session_name: &str) -> String {
 
     return format!("tmux attach-session -t {}:1", session_name);
 }
+
+pub fn kill_session(session_name: &str) -> String {
+    return format!("tmux kill-session -t {}", session_name)
+}

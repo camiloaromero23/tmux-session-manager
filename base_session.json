@@ -1,5 +1,5 @@
 {
-  "sessionDir": "~/path_to_desired_session_dir/.../{session_name}",
+  "sessionDir": "PATH_TO_SESSION_DIR",
   "windows": [
     {
       "windowName": "windowName?",

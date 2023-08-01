@@ -65,3 +65,12 @@ pub fn select_session(tmux_config_folder_path: &str) {
         run_command(command);
     });
 }
+
+pub fn kill_session() {
+    let active_sessions = tmux::list_sessions();
+    let session_to_kill = rust_fzf::select(active_sessions, vec![]);
+
+    let command = tmux::kill_session(session_to_kill.as_ref());
+
+    run_command(command);
+}
