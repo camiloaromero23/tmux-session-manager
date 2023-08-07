@@ -20,6 +20,10 @@ pub fn select_session(tmux_config_folder_path: &str) {
 
     let selected_session = rust_fzf::select(configured_sessions, vec![]);
 
+    if selected_session.is_empty() {
+        return;
+    }
+
     let session_exists = tmux::session_exists(selected_session.as_ref());
 
     let attach_to_window_command = tmux::get_attach_to_window_command(selected_session.as_ref());
