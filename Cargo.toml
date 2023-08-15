@@ -1,6 +1,6 @@
 [package]
 name = "tmux-session-manager"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 authors = ["Camilo Romero <camiloaromero23@gmail.com>"]
 description = "A tmux session manager which uses fzf to select from both active and configured sessions"

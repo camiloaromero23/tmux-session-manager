@@ -24,9 +24,8 @@ pub fn select_session(tmux_config_folder_path: &str) {
         return;
     }
 
-    let session_exists = tmux::session_exists(selected_session.as_ref());
-
-    let attach_to_window_command = tmux::get_attach_to_window_command(selected_session.as_ref());
+    let (attach_to_window_command, session_exists) =
+        tmux::get_attach_to_window_command(selected_session.as_ref());
 
     if session_exists {
         log::debug!("Session {} already exists", selected_session);
@@ -43,8 +42,6 @@ pub fn select_session(tmux_config_folder_path: &str) {
 
     let session_config: SessionConfig = serde_json::from_str(&selected_session_file)
         .expect("Session does not have correct format. Watch file structure in base_session.json");
-
-    let attach_to_window_command = tmux::get_attach_to_window_command(selected_session.as_ref());
 
     let tmux_session_command =
         tmux::create_session_command(&session_config, selected_session.as_ref());

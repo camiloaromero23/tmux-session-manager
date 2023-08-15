@@ -53,16 +53,25 @@ pub fn get_configured_sessions(tmux_config_folder_path: &str) -> Vec<String> {
     );
 }
 
-pub fn get_attach_to_window_command(session_name: &str) -> String {
+pub fn get_attach_to_window_command(session_name: &str) -> (String, bool) {
+    let session_exists = session_exists(session_name);
     let is_running_inside_tmux = std::env::var("TMUX").is_ok();
 
-    if is_running_inside_tmux {
-        return format!("tmux switch-client -t {}", session_name);
+    if !is_running_inside_tmux {
+        let cmd = format!("tmux attach-session -t {}:1", session_name);
+        return (cmd, session_exists);
     }
 
-    return format!("tmux attach-session -t {}:1", session_name);
+    if session_exists {
+        let cmd = format!("tmux switch-client -t {}", session_name);
+        return (cmd, session_exists);
+    }
+
+    let cmd = format!("tmux switch-client -t {}:1", session_name);
+
+    return (cmd, session_exists);
 }
 
 pub fn kill_session(session_name: &str) -> String {
-    return format!("tmux kill-session -t {}", session_name)
+    return format!("tmux kill-session -t {}", session_name);
 }
