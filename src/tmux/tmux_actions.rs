@@ -25,7 +25,7 @@ pub fn select_session(tmux_config_folder_path: &str) {
     }
 
     let (attach_to_window_command, session_exists) =
-        tmux::get_attach_to_window_command(selected_session.as_ref());
+        tmux::get_attach_to_window_command(&selected_session);
 
     if session_exists {
         log::debug!("Session {} already exists", selected_session);
@@ -33,9 +33,9 @@ pub fn select_session(tmux_config_folder_path: &str) {
         return;
     }
 
-    let config_file_name = format!("{}.json", selected_session);
+    let config_file_name = format!("{selected_session}.json");
 
-    let session_config_path = format!("{}/sessions/{}", tmux_config_folder_path, config_file_name);
+    let session_config_path = format!("{tmux_config_folder_path}/sessions/{config_file_name}");
 
     let selected_session_file =
         std::fs::read_to_string(session_config_path).expect("Unable to read file");
@@ -43,8 +43,7 @@ pub fn select_session(tmux_config_folder_path: &str) {
     let session_config: SessionConfig = serde_json::from_str(&selected_session_file)
         .expect("Session does not have correct format. Watch file structure in base_session.json");
 
-    let tmux_session_command =
-        tmux::create_session_command(&session_config, selected_session.as_ref());
+    let tmux_session_command = tmux::create_session_command(&session_config, &selected_session);
 
     let mut tmux_commands = vec![tmux_session_command];
 
@@ -53,9 +52,7 @@ pub fn select_session(tmux_config_folder_path: &str) {
         .clone()
         .into_iter()
         .skip(1)
-        .map(|window| {
-            tmux::create_window_command((&session_config, &window, selected_session.as_ref()))
-        })
+        .map(|window| tmux::create_window_command((&session_config, &window, &selected_session)))
         .collect();
 
     tmux_commands.extend(tmux_window_commands);
@@ -75,7 +72,7 @@ pub fn kill_session() {
         return;
     }
 
-    let command = tmux::kill_session(session_to_kill.as_ref());
+    let command = tmux::kill_session(&session_to_kill);
 
     run_command(command);
 }

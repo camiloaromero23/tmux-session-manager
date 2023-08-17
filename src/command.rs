@@ -4,10 +4,10 @@ pub fn parse_window_command(command: String, is_session: Option<bool>) -> String
     }
 
     if is_session == Some(true) {
-        return format!(" \"{}; zsh\"", command);
+        return format!(" \"{command}; zsh\"");
     }
 
-    return format!(": \"{}; zsh\"", command);
+    return format!(": \"{command}; zsh\"");
 }
 
 pub fn run_command(command: String) -> std::process::ExitStatus {

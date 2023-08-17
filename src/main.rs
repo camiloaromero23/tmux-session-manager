@@ -18,14 +18,14 @@ fn main() {
     let home_dir = std::env::var("HOME").unwrap();
     let config_folder_path = match std::env::var("XDG_CONFIG_HOME") {
         Ok(val) => val,
-        _ => format!("{}/.config", home_dir),
+        _ => format!("{home_dir}/.config"),
     };
 
-    let tmux_config_folder_path = format!("{}/tmux", config_folder_path);
+    let tmux_config_folder_path = format!("{config_folder_path}/tmux");
 
     if args.kill_session {
         return tmux_actions::kill_session();
     }
 
-    tmux_actions::select_session(tmux_config_folder_path.as_ref())
+    tmux_actions::select_session(&tmux_config_folder_path)
 }
