@@ -1,15 +1,3 @@
-pub fn parse_window_command(command: String, is_session: Option<bool>) -> String {
-    if command == "" {
-        return command;
-    }
-
-    if is_session == Some(true) {
-        return format!(" \"{command}; zsh\"");
-    }
-
-    return format!(": \"{command}; zsh\"");
-}
-
 pub fn run_command(command: String) -> std::process::ExitStatus {
     log::debug!("Executing command: {}", command);
 

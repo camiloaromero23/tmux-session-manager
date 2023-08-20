@@ -1,6 +1,13 @@
-use crate::command::{command_ran_successfully, get_command_output, parse_window_command};
+use crate::command::{command_ran_successfully, get_command_output};
 
 use super::sessions::{SessionConfig, WindowConfig};
+
+pub struct CreateWindowCommandParams<'a> {
+    pub session: &'a SessionConfig,
+    pub window: WindowConfig,
+    pub selected_session: &'a str,
+    pub session_index: usize,
+}
 
 pub fn list_sessions() -> Vec<String> {
     return get_command_output("tmux ls -F '#{session_name}'");
@@ -11,33 +18,56 @@ pub fn session_exists(selected_session: &str) -> bool {
 }
 
 pub fn create_session_command(session_config: &SessionConfig, selected_session: &str) -> String {
-    let first_window = session_config.windows.get(0).expect("No windows provided");
+    let first_window = session_config
+        .windows
+        .get(0)
+        .expect("No windows provided")
+        .to_owned();
 
     let window_name = match first_window.window_name.to_owned() {
         Some(name) => format!(" -n {name}"),
         _ => "".to_owned(),
     };
 
-    let tmux_session_command = parse_window_command(first_window.command.to_owned(), Some(true));
+    let window_command = window_command(selected_session, first_window, 1);
     let tmux_session_command = format!(
-        "tmux new-session -d -c {} -s {selected_session}{window_name}{tmux_session_command}",
+        "tmux new-session -d -c {} -s {selected_session}{window_name}; {window_command}",
         session_config.session_dir
     );
     return tmux_session_command;
 }
 
-pub fn create_window_command(
-    (session_config, window, selected_session): (&SessionConfig, &WindowConfig, &str),
-) -> String {
+pub fn create_window_command(create_window_command_params: CreateWindowCommandParams) -> String {
+    let CreateWindowCommandParams {
+        session,
+        window,
+        selected_session,
+        session_index,
+    } = create_window_command_params;
+
     let window_name = match window.window_name.to_owned() {
         Some(name) => format!(" -n {name}"),
         _ => "".to_owned(),
     };
-    let command = parse_window_command(window.command.to_owned(), None);
     let command = format!(
-        "tmux new-window -c {}{window_name} -t {selected_session}{command}",
-        session_config.session_dir
+        "tmux new-window -c {}{window_name} -t {selected_session}:{session_index}",
+        session.session_dir
     );
+    let window_command = window_command(selected_session, window, session_index);
+    let command = format!("{command}; {window_command}");
+    return command;
+}
+
+fn window_command(session_name: &str, window: WindowConfig, session_index: usize) -> String {
+    if window.command.is_empty() {
+        return "".to_owned();
+    }
+
+    let command = format!(
+        "tmux send-keys -t {session_name}:{session_index} \"{}\" Enter",
+        window.command
+    );
+
     return command;
 }
 

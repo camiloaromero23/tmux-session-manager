@@ -4,7 +4,7 @@ use rust_fzf;
 
 use crate::command::run_command;
 
-use super::tmux;
+use super::tmux::{self, CreateWindowCommandParams};
 
 pub fn select_session(tmux_config_folder_path: &str) {
     let mut configured_sessions = tmux::get_configured_sessions(tmux_config_folder_path);
@@ -52,7 +52,17 @@ pub fn select_session(tmux_config_folder_path: &str) {
         .clone()
         .into_iter()
         .skip(1)
-        .map(|window| tmux::create_window_command((&session_config, &window, &selected_session)))
+        .enumerate()
+        .map(|(index, window)| {
+            let create_window_command = CreateWindowCommandParams {
+                session: &session_config,
+                window,
+                selected_session: &selected_session,
+                session_index: index + 2,
+            };
+
+            tmux::create_window_command(create_window_command)
+        })
         .collect();
 
     tmux_commands.extend(tmux_window_commands);
