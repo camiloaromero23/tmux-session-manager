@@ -25,7 +25,7 @@ pub fn create_session_command(session_config: &SessionConfig, selected_session: 
         .to_owned();
 
     let window_name = match first_window.window_name.to_owned() {
-        Some(name) => format!(" -n {name}"),
+        Some(name) => format!(" -n \"{name}\""),
         _ => "".to_owned(),
     };
 
@@ -46,7 +46,7 @@ pub fn create_window_command(create_window_command_params: CreateWindowCommandPa
     } = create_window_command_params;
 
     let window_name = match window.window_name.to_owned() {
-        Some(name) => format!(" -n {name}"),
+        Some(name) => format!(" -n \"{name}\""),
         _ => "".to_owned(),
     };
     let command = format!(
