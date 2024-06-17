@@ -323,9 +323,9 @@ checksum = "e5ea92a5b6195c6ef2a0295ea818b312502c6fc94dde986c5553242e18fd4ce2"
 
 [[package]]
 name = "rust_fzf"
-version = "0.1.2"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09edc3791ac59f1c4c161777ff46d65ecf06f3a8a24f6fa21f4fdd76dae52ef6"
+checksum = "76a94b9c6a9880356cc6de038a52397509f8ac86a18c30d76da904b08fec2cb1"
 
 [[package]]
 name = "rustix"

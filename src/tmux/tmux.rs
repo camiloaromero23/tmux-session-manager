@@ -98,6 +98,6 @@ pub fn get_attach_to_window_command(session_name: &str) -> (String, bool) {
     return (cmd, session_exists);
 }
 
-pub fn kill_session(session_name: &str) -> String {
+pub fn get_kill_session_command(session_name: &str) -> String {
     return format!("tmux kill-session -t {session_name}");
 }

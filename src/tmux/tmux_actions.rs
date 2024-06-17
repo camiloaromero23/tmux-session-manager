@@ -1,19 +1,22 @@
-use crate::tmux::sessions::SessionConfig;
 use itertools::Itertools;
-use rust_fzf;
 
 use crate::command::run_command;
 
-use super::tmux::{self, CreateWindowCommandParams};
+use super::{fzf, sessions::SessionConfig, tmux};
 
 pub fn select_active_session() {
     let active_sessions = tmux::list_sessions();
 
-    let selected_session = rust_fzf::select(active_sessions, vec![]);
+    let selected_session = fzf::select(
+        active_sessions,
+        "🚀 tmux-session-manager (active-sessions 🟢) 🚀",
+    );
 
-    if selected_session.is_empty() {
+    if selected_session.is_none() {
         return;
     }
+
+    let selected_session = selected_session.unwrap();
 
     let (attach_to_window_command, _) = tmux::get_attach_to_window_command(&selected_session);
 
@@ -32,11 +35,13 @@ pub fn select_session(tmux_config_folder_path: &str) {
         .sorted_unstable()
         .collect();
 
-    let selected_session = rust_fzf::select(configured_sessions, vec![]);
+    let selected_session = fzf::select(configured_sessions, "🚀 tmux-session-manager 🚀");
 
-    if selected_session.is_empty() {
+    if selected_session.is_none() {
         return;
     }
+
+    let selected_session = selected_session.unwrap();
 
     let (attach_to_window_command, session_exists) =
         tmux::get_attach_to_window_command(&selected_session);
@@ -68,7 +73,7 @@ pub fn select_session(tmux_config_folder_path: &str) {
         .skip(1)
         .enumerate()
         .map(|(index, window)| {
-            let create_window_command = CreateWindowCommandParams {
+            let create_window_command = tmux::CreateWindowCommandParams {
                 session: &session_config,
                 window,
                 selected_session: &selected_session,
@@ -90,13 +95,18 @@ pub fn select_session(tmux_config_folder_path: &str) {
 
 pub fn kill_session() {
     let active_sessions = tmux::list_sessions();
-    let session_to_kill = rust_fzf::select(active_sessions, vec![]);
+    let session_to_kill = fzf::select(
+        active_sessions,
+        "🚀 tmux-session-manager (kill-session 💀) 🚀",
+    );
 
-    if session_to_kill.is_empty() {
+    if session_to_kill.is_none() {
         return;
     }
 
-    let command = tmux::kill_session(&session_to_kill);
+    let session_to_kill = session_to_kill.unwrap();
+
+    let command = tmux::get_kill_session_command(&session_to_kill);
 
     run_command(command);
 }
