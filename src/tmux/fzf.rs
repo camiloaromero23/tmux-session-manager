@@ -1,13 +1,24 @@
 use rust_fzf;
 
-pub fn select(options: Vec<String>, header_title: &str) -> Option<String> {
+pub fn select(
+    options: Vec<String>,
+    header_title: &str,
+    active_session_preview: bool,
+) -> Option<String> {
+    let preview_command = if active_session_preview {
+        "tmux display-message -p -F '#{window_index}' | tmux capture-pane -ep -t {}:".to_string()
+    } else {
+        "".to_string()
+    };
+
     let selected_session = rust_fzf::select(
         options,
         vec![
-            "--height=50%".to_string(),
-            "--tmux".to_string(),
+            "--tmux=center,85%".to_string(),
             "--border=rounded".to_string(),
-            format!("--border-label={}", header_title),
+            "--preview-window=right:65%".to_string(),
+            format!("--preview={preview_command}"),
+            format!("--border-label={header_title}"),
         ],
     );
 

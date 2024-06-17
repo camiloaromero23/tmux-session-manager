@@ -10,6 +10,7 @@ pub fn select_active_session() {
     let selected_session = fzf::select(
         active_sessions,
         "🚀 tmux-session-manager (active-sessions 🟢) 🚀",
+        true,
     );
 
     if selected_session.is_none() {
@@ -35,7 +36,7 @@ pub fn select_session(tmux_config_folder_path: &str) {
         .sorted_unstable()
         .collect();
 
-    let selected_session = fzf::select(configured_sessions, "🚀 tmux-session-manager 🚀");
+    let selected_session = fzf::select(configured_sessions, "🚀 tmux-session-manager 🚀", false);
 
     if selected_session.is_none() {
         return;
@@ -98,6 +99,7 @@ pub fn kill_session() {
     let session_to_kill = fzf::select(
         active_sessions,
         "🚀 tmux-session-manager (kill-session 💀) 🚀",
+        true,
     );
 
     if session_to_kill.is_none() {
