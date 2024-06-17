@@ -8,6 +8,8 @@ mod tmux;
 struct Args {
     #[arg(short, long)]
     kill_session: bool,
+    #[arg(short, long)]
+    select_active_session: bool,
 }
 
 fn main() {
@@ -25,6 +27,10 @@ fn main() {
 
     if args.kill_session {
         return tmux_actions::kill_session();
+    }
+
+    if args.select_active_session {
+        return tmux_actions::select_active_session();
     }
 
     tmux_actions::select_session(&tmux_config_folder_path)

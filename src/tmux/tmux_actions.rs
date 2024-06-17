@@ -6,6 +6,20 @@ use crate::command::run_command;
 
 use super::tmux::{self, CreateWindowCommandParams};
 
+pub fn select_active_session() {
+    let active_sessions = tmux::list_sessions();
+
+    let selected_session = rust_fzf::select(active_sessions, vec![]);
+
+    if selected_session.is_empty() {
+        return;
+    }
+
+    let (attach_to_window_command, _) = tmux::get_attach_to_window_command(&selected_session);
+
+    run_command(attach_to_window_command);
+}
+
 pub fn select_session(tmux_config_folder_path: &str) {
     let mut configured_sessions = tmux::get_configured_sessions(tmux_config_folder_path);
 
