@@ -20,6 +20,13 @@ The available commands are:
 tmux-session-manager
 ```
 
+## Select an active session
+
+```bash
+tmux-session-manager -s
+tmux-session-manager --select
+```
+
 ## Kill an active session
 
 ```bash
