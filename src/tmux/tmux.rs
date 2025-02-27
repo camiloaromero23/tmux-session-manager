@@ -14,7 +14,9 @@ pub fn list_sessions() -> Vec<String> {
 }
 
 pub fn session_exists(selected_session: &str) -> bool {
-    return command_ran_successfully(format!("tmux has-session -t {selected_session}"));
+    return command_ran_successfully(format!(
+        "tmux ls -F '#{selected_session}' | grep -x {selected_session}"
+    ));
 }
 
 pub fn create_session_command(session_config: &SessionConfig, selected_session: &str) -> String {
